@@ -58,7 +58,7 @@
         .wrap {
             max-width: 1200px;
             width: 95%;
-            margin: 20px auto 0px auto;
+            margin: 20px auto 0 auto;
         }
         .mypost {
             max-width: 500px;
@@ -66,11 +66,11 @@
 
             margin: 20px auto 20px auto;
 
-            box-shadow: 0px 0px 3px 0px grey;
+            box-shadow: 0 0 3px 0 grey;
 
             padding: 20px;
 
-
+            display: none;
         }
         .twobuttons {
 
@@ -86,17 +86,25 @@
             margin-right: 10px;
         }
     </style>
+    <script>
+        function open_box(){
+            $(`#postbox`).show()
+        }
+        function close_box(){
+            $(`#postbox`).hide()
+        }
+    </script>
 </head>
 
 <body>
     <div class="mytitle">
         <h1>내 생애 최고의 영화들</h1>
-        <button>영화 기록하기🔥</button>
+        <button onclick="open_box()">영화 기록하기🔥</button>
     </div>
-    <div class="mypost">
+    <div class="mypost" id="postbox">
         <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">영화URL</label>
+            <input type="email" class="form-control" id="url" placeholder="name@example.com">
+            <label for="url">영화URL</label>
         </div>
         <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect01">별점</label>
@@ -115,11 +123,11 @@
         </div>
         <div class="twobuttons">
             <button type="button" class="btn btn-dark">기록하기</button>
-            <button type="button" class="btn btn-outline-dark">닫기</button>
+            <button onclick="close_box()" type="button" class="btn btn-outline-dark">닫기</button>
         </div>
     </div>
     <div class="wrap">
-        <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div id="cards-box" class="row row-cols-1 row-cols-md-4 g-4">
             <div class="col">
                 <div class="card">
                     <img src="https://movie-phinf.pstatic.net/20210728_221/1627440327667GyoYj_JPEG/movie_image.jpg"
