@@ -59,11 +59,26 @@
             margin: 10px auto 10px auto;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            alert('다 로딩됐다!')
+        });
+        $.ajax({
+                type: "GET",
+                url: "http://spartacodingclub.shop/sparta_api/weather/wonju",
+                data: {},
+                success: function (response) {
+                    let temp = response['temp']
+                    $('#temp_wonju').text(temp)
+                }
+            })
+    </script>
 </head>
 
 <body>
     <div class="mytitle">
         <h1>eve 팬명록</h1>
+        <p>현재기온 : <span id="temp_wonju">00.0</span>도</p>
     </div>
     <div class="mypost">
         <div class="form-floating mb-3">
