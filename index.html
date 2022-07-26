@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -12,132 +12,180 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+    <title>스파르타 피디아</title>
 
-    <title>선착순 공동구매</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
     <style>
         * {
-            font-family: 'Gowun Batang', serif;
-            color: white;
+            font-family: 'Gowun Dodum', sans-serif;
         }
 
-        body {
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://cdn.aitimes.com/news/photo/202010/132592_129694_3139.jpg');
+        .mytitle {
+            width: 100%;
+            height: 250px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://movie-phinf.pstatic.net/20210715_95/1626338192428gTnJl_JPEG/movie_image.jpg');
             background-position: center;
             background-size: cover;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        h1 {
-            font-weight: bold;
+        .mytitle > button {
+            width: 200px;
+            height: 50px;
+
+            background-color: transparent;
+            color: white;
+
+            border-radius: 50px;
+            border: 1px solid white;
+
+            margin-top: 10px;
         }
 
-        .order {
-            width: 500px;
-            margin: 60px auto 0px auto;
-            padding-bottom: 60px;
+        .mytitle > button:hover {
+            border: 2px solid white;
         }
 
-        .mybtn {
-            width: 100%;
+        .mycomment {
+            color: gray;
         }
 
-        .order > table {
-            margin: 40px 0;
-            font-size: 18px;
+        .mycards {
+            margin: 20px auto 0px auto;
+            width: 95%;
+            max-width: 1200px;
         }
 
-        option {
-            color: black;
+        .mypost {
+            width: 95%;
+            max-width: 500px;
+            margin: 20px auto 0px auto;
+            padding: 20px;
+            box-shadow: 0px 0px 3px 0px gray;
+
+            display: none;
+        }
+
+        .mybtns {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 20px;
+        }
+
+        .mybtns > button {
+            margin-right: 10px;
         }
     </style>
     <script>
         $(document).ready(function () {
-            show_order();
+            listing();
         });
 
-        function show_order() {
+        function listing() {
             $.ajax({
                 type: 'GET',
-                url: '/mars',
+                url: '/movie',
                 data: {},
                 success: function (response) {
-                    let rows = response['orders']
+                    let rows = response['movies']
                     for (let i = 0; i < rows.length; i++){
-                        let name = rows[i]['name']
-                        let address = rows[i]['address']
-                        let size = rows[i]['size']
+                        let comment = rows[i]['comment']
+                        let title = rows[i]['title']
+                        let desc = rows[i]['desc']
+                        let image = rows[i]['image']
+                        let star = rows[i]['star']
 
-                        let temp_html = `<tr>
-                                            <td>${name}</td>
-                                            <td>${address}</td>
-                                            <td>${size}</td>
-                                        </tr>`
-                        $('#order-box').append(temp_html)
+                        let star_image = '⭐'.repeat(star)
+
+                        let temp_html = `<div class="col">
+                                            <div class="card h-100">
+                                                <img src="${image}">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${title}</h5>
+                                                    <p class="card-text">${desc}</p>
+                                                    <p>${star_image}</p>
+                                                    <p class="mycomment">${comment}</p>
+                                                </div>
+                                            </div>
+                                        </div>`
+                        $('#cards-box').append(temp_html)
                     }
+
                 }
-            });
+            })
         }
 
-        function save_order() {
-            let name = $('#name').val()
-            let address = $('#address').val()
-            let size = $('#size').val()
+        function posting() {
+            let url = $('#url').val()
+            let star = $('#star').val()
+            let comment = $('#comment').val()
 
             $.ajax({
                 type: 'POST',
-                url: '/mars',
-                data: { name_give: name, address_give: address, size_give: size},
+                url: '/movie',
+                data: {url_give:url, star_give:star, comment_give:comment},
                 success: function (response) {
                     alert(response['msg'])
                     window.location.reload()
                 }
             });
         }
+
+        function open_box() {
+            $('#post-box').show()
+        }
+
+        function close_box() {
+            $('#post-box').hide()
+        }
     </script>
 </head>
+
 <body>
-<div class="mask"></div>
-<div class="order">
-    <h1>화성에 땅 사놓기!</h1>
-    <h3>가격: 평 당 500원</h3>
-    <p>
-        화성에 땅을 사둘 수 있다고?<br/>
-        앞으로 백년 간 오지 않을 기회. 화성에서 즐기는 노후!
-    </p>
-    <div class="order-info">
-        <div class="input-group mb-3">
-            <span class="input-group-text">이름</span>
-            <input id="name" type="text" class="form-control">
-        </div>
-        <div class="input-group mb-3">
-            <span class="input-group-text">주소</span>
-            <input id="address" type="text" class="form-control">
-        </div>
-        <div class="input-group mb-3">
-            <label class="input-group-text" for="size">평수</label>
-            <select class="form-select" id="size">
-                <option selected>-- 주문 평수 --</option>
-                <option value="10평">10평</option>
-                <option value="20평">20평</option>
-                <option value="30평">30평</option>
-                <option value="40평">40평</option>
-                <option value="50평">50평</option>
-            </select>
-        </div>
-        <button onclick="save_order()" type="button" class="btn btn-warning mybtn">주문하기</button>
+<div class="mytitle">
+    <h1>내 생애 최고의 영화들</h1>
+    <button onclick="open_box()">영화 기록하기</button>
+</div>
+<div class="mypost" id="post-box">
+    <div class="form-floating mb-3">
+        <input id="url" type="email" class="form-control" placeholder="name@example.com">
+        <label>영화URL</label>
     </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">이름</th>
-            <th scope="col">주소</th>
-            <th scope="col">평수</th>
-        </tr>
-        </thead>
-        <tbody id="order-box">
-        </tbody>
-    </table>
+    <div class="input-group mb-3">
+        <label class="input-group-text" for="inputGroupSelect01">별점</label>
+        <select class="form-select" id="star">
+            <option selected>-- 선택하기 --</option>
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+        </select>
+    </div>
+    <div class="form-floating">
+        <textarea id="comment" class="form-control" placeholder="Leave a comment here"></textarea>
+        <label for="floatingTextarea2">코멘트</label>
+    </div>
+    <div class="mybtns">
+        <button onclick="posting()" type="button" class="btn btn-dark">기록하기</button>
+        <button onclick="close_box()" type="button" class="btn btn-outline-dark">닫기</button>
+    </div>
+</div>
+<div class="mycards">
+    <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+    </div>
 </div>
 </body>
+
 </html>
