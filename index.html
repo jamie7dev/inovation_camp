@@ -5,30 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta property="og:title" content="eve 팬명록" />
-    <meta property="og:description" content="응원 한마디 남기고 가세요!" />
-    <meta property="og:image" content="https://w.namu.la/s/63f315e2bcf98ede76cd361b46b89c94dc1bae7a7db5477e18f388745ca44edefd1bafe756413918f1095d7df871ad2f8aa3aa3296e5617025f334921b8d9d0a7d78168c36d9ac93bc0ba0a2a9ae35da" />
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
 
-    <title>초미니홈피 - 팬명록</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <title>인생 버킷리스트</title>
+
     <style>
         * {
-            font-family: 'Noto Serif KR', serif;
+            font-family: 'Gowun Dodum', sans-serif;
         }
+
         .mypic {
             width: 100%;
-            height: 300px;
+            height: 200px;
 
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://w.namu.la/s/63f315e2bcf98ede76cd361b46b89c94dc1bae7a7db5477e18f388745ca44edefd1bafe756413918f1095d7df871ad2f8aa3aa3296e5617025f334921b8d9d0a7d78168c36d9ac93bc0ba0a2a9ae35da');
-            background-position: center 30%;
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1601024445121-e5b82f020549?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80');
+            background-position: center;
             background-size: cover;
 
             color: white;
@@ -39,117 +37,136 @@
             justify-content: center;
         }
 
-        .mypost {
-            width: 95%;
-            max-width: 500px;
-            margin: 20px auto 20px auto;
+        .mypic > h1 {
+            font-size: 30px;
+        }
 
-            box-shadow: 0px 0px 3px 0px black;
+        .mybox {
+            width: 95%;
+            max-width: 700px;
             padding: 20px;
+            box-shadow: 0px 0px 10px 0px lightblue;
+            margin: 20px auto;
         }
 
-        .mypost > button {
-            margin-top: 15px;
+        .mybucket {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .mycards {
-            width: 95%;
-            max-width: 500px;
-            margin: auto;
+        .mybucket > input {
+            width: 70%;
         }
 
-        .mycards > .card {
-            margin-top: 10px;
+        .mybox > li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
             margin-bottom: 10px;
+            min-height: 48px;
+        }
+
+        .mybox > li > h2 {
+            max-width: 75%;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            margin-bottom: 0px;
+        }
+
+        .mybox > li > h2.done {
+            text-decoration: line-through
         }
     </style>
     <script>
         $(document).ready(function () {
-            show_comment();
+            show_bucket();
         });
-        function save_comment() {
-            let name = $('#name').val()
-            let comment = $('#comment').val()
+
+        function show_bucket() {
+            $.ajax({
+                type: "GET",
+                url: "/bucket",
+                data: {},
+                success: function (response) {
+                    let rows = response['buckets']
+                    for (let i = 0; i < rows.length; i++){
+                        let bucket = rows[i]['bucket']
+                        let num = rows[i]['num']
+                        let done = rows[i]['done']
+
+                        let temp_html = ``
+                        if (done == 0) {
+                            temp_html = `<li>
+                                            <h2>✅ ${bucket}</h2>
+                                            <button onclick="done_bucket(${num})" type="button" class="btn btn-outline-primary">완료!</button>
+                                        </li>`
+                        } else {
+                            temp_html = `<li>
+                                            <h2 class="done">✅ ${bucket}</h2>
+                                            <button onclick="cancel_bucket(${num})" type="button" class="btn btn-outline-danger">취소!</button>
+                                        </li>`
+                        }
+                        $('#bucket-list').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        function save_bucket() {
+            let bucket = $('#bucket').val()
 
             $.ajax({
                 type: "POST",
-                url: "/homework",
-                data: {'name_give':name, 'comment_give':comment},
+                url: "/bucket",
+                data: {bucket_give: bucket},
                 success: function (response) {
                     alert(response["msg"])
                     window.location.reload()
                 }
             });
         }
-        function show_comment() {
-            $('#comment-list').empty()
-            $.ajax({
-                type: "GET",
-                url: "/homework",
-                data: {},
-                success: function (response) {
-                    let rows = response['comments']
-                    for (let i = 0; i < rows.length; i++) {
-                        let name = rows[i]['name']
-                        let comment = rows[i]['comment']
 
-                        let temp_html = `<div class="card">
-                                            <div class="card-body">
-                                                <blockquote class="blockquote mb-0">
-                                                    <p>${comment}</p>
-                                                    <footer class="blockquote-footer">${name}</footer>
-                                                </blockquote>
-                                            </div>
-                                        </div>`
-                        $('#comment-list').append(temp_html)
-                    }
+        function done_bucket(num) {
+            $.ajax({
+                type: "POST",
+                url: "/bucket/done",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function cancel_bucket(num) {
+            $.ajax({
+                type: "POST",
+                url: "/bucket/cancel",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
                 }
             });
         }
     </script>
 </head>
 <body>
-    <div class="mypic">
-        <h1>eve 팬명록</h1>
-        <p>현재기온: <span id="temp">36</span>도</p>
+<div class="mypic">
+    <h1>나의 버킷리스트</h1>
+</div>
+<div class="mybox">
+    <div class="mybucket">
+        <input id="bucket" class="form-control" type="text" placeholder="이루고 싶은 것을 입력하세요">
+        <button onclick="save_bucket()" type="button" class="btn btn-outline-primary">기록하기</button>
     </div>
-    <div class="mypost">
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="name" placeholder="url">
-            <label for="floatingInput">닉네임</label>
-        </div>
-        <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="comment"
-                style="height: 100px"></textarea>
-            <label for="floatingTextarea2">응원댓글</label>
-        </div>
-        <button onclick="save_comment()" type="button" class="btn btn-dark">댓글 남기기</button>
-    </div>
-    <div class="mycards" id="comment-list">
-        <div class="card">
-            <div class="card-body">
-                <blockquote class="blockquote mb-0">
-                    <p>새로운 앨범 너무 멋져요!</p>
-                    <footer class="blockquote-footer">호빵맨</footer>
-                </blockquote>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <blockquote class="blockquote mb-0">
-                    <p>새로운 앨범 너무 멋져요!</p>
-                    <footer class="blockquote-footer">호빵맨</footer>
-                </blockquote>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <blockquote class="blockquote mb-0">
-                    <p>새로운 앨범 너무 멋져요!</p>
-                    <footer class="blockquote-footer">호빵맨</footer>
-                </blockquote>
-            </div>
-        </div>
-    </div>
+</div>
+<div class="mybox" id="bucket-list">
+</div>
 </body>
 </html>
